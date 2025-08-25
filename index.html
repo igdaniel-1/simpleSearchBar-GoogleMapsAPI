@@ -1,37 +1,7 @@
-<!-- <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js">
-</script>
-<link rel="stylesheet" href="./style.css"/>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js"></script>
 
-<gmpx-api-loader key="AIzaSyBNDt0ni0w9MsZMOoSf7j_EO6-Z--VkJaA" solution-channel="GMP_GE_placepicker_v2" region="US">
-</gmpx-api-loader>
-<div id="place-picker-box">
-  <div id="place-picker-container">
-    <h1>Search for an address:</h1>
-    <gmpx-place-picker id="picker-input" placeholder="Enter an address"></gmpx-place-picker>
-  </div>
-</div> -->
-
-
-<!doctype html>
-<html>
-  <head>
-    <title>Place Autocomplete Data API Predictions</title>
-
-    <link rel="stylesheet" type="text/css" href="./style.css" />
-    <script type="module" src="./index.ts"></script>
-  </head>
-  <body>
-    <div id="title"></div>
-    <ul id="results"></ul>
-    <p><span id="prediction"></span></p>
-    <img
-      class="powered-by-google"
-      src="https://storage.googleapis.com/geo-devrel-public-buckets/powered_by_google_on_white.png"
-      alt="Powered by Google"
-    />
-
-    <!-- prettier-ignore -->
-    <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-        ({key: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", v: "weekly"});</script>
-  </body>
-</html>
+<gmpx-api-loader key="AIzaSyBNDt0ni0w9MsZMOoSf7j_EO6-Z--VkJaA" solution-channel="GMP_GCC_placepicker_v1"></gmpx-api-loader>
+<div class="container">
+  <gmpx-place-picker placeholder="Enter a restaurant"></gmpx-place-picker>
+  <div class="result"></div>
+</div>

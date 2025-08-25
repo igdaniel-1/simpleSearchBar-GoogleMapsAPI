@@ -1,47 +1,64 @@
-async function init() {
-    // @ts-ignore
-    const { Place, AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
 
-    // Add an initial request body.
-    let request = {
-        input: "Hello",
-        locationRestriction: { west: -122.44, north: 37.8, east: -122.39, south: 37.78 },
-        origin: { lat: 37.7893, lng: -122.4039 },
-        includedPrimaryTypes: ["restaurant"],
-        language: "en-US",
-        region: "us",
-    };
+const picker = document.querySelector('gmpx-place-picker');
+const result = document.querySelector('.result');
+picker.addEventListener('gmpx-placechange', (e) => {
+  result.textContent = e.target.value?.formattedAddress ?? '';
+});
 
-    // Create a session token.
-    const token = new AutocompleteSessionToken();
-    // Add the token to the request.
-    // @ts-ignore
-    request.sessionToken = token;
-    // Fetch autocomplete suggestions.
-    const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
 
-    const title = document.getElementById('title') as HTMLElement;
-    title.appendChild(document.createTextNode('Query predictions for "' + request.input + '":'));
 
-    for (let suggestion of suggestions) {
-        const placePrediction = suggestion.placePrediction;
 
-        // Create a new list element.
-        const listItem = document.createElement('li');
-        const resultsElement = document.getElementById("results") as HTMLElement;
-        listItem.appendChild(document.createTextNode(placePrediction.text.toString()));
-        resultsElement.appendChild(listItem);
-    }
 
-    let place = suggestions[0].placePrediction.toPlace(); // Get first predicted place.
-    await place.fetchFields({
-        fields: ['displayName', 'formattedAddress'],
-    });
+// async function init() {
+//     // @ts-ignore
+//     const { Place, AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
 
-    const placeInfo = document.getElementById("prediction") as HTMLElement;
-    placeInfo.textContent = 'First predicted place: ' + place.displayName + ': ' + place.formattedAddress;
+//     // sample request body.
+//     // let request = {
+//     //     input: "what",
+//     //     locationRestriction: { west: -122.44, north: 37.8, east: -122.39, south: 37.78 },
+//     //     origin: { lat: 37.7893, lng: -122.4039 },
+//     //     includedPrimaryTypes: ["restaurant"],
+//     //     language: "en-US",
+//     //     region: "us",
+//     // };
 
-}
+//     // Create a session token.
+//     // const token = new AutocompleteSessionToken();
+//     // // Add the token to the request.
+//     // // @ts-ignore
+//     // request.sessionToken = token;
+//     // // Fetch autocomplete suggestions.
+//     // const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
 
-init();
-export { };
+//     // const title = document.getElementById('title') as HTMLElement;
+//     // title.appendChild(document.createTextNode('Query predictions for "' + request.input + '":'));
+
+//     // for (let suggestion of suggestions) {
+//     //     const placePrediction = suggestion.placePrediction;
+
+//     //     // Create a new list element.
+//     //     const listItem = document.createElement('li');
+//     //     const resultsElement = document.getElementById("results") as HTMLElement;
+//     //     listItem.appendChild(document.createTextNode(placePrediction.text.toString()));
+//     //     resultsElement.appendChild(listItem);
+//     // }
+
+//     // let place = suggestions[0].placePrediction.toPlace(); // Get first predicted place.
+//     // await place.fetchFields({
+//     //     fields: ['displayName', 'formattedAddress'],
+//     // });
+
+//     // const placeInfo = document.getElementById("prediction") as HTMLElement;
+//     // placeInfo.textContent = 'First predicted place: ' + place.displayName + ': ' + place.formattedAddress;
+
+//     // new code for search bar
+//     const picker = document.querySelector('gmpx-place-picker');
+//     const result = document.querySelector('.result');
+//     picker.addEventListener('gmpx-placechange', (e) => {
+//     result.textContent = e.target.value?.formattedAddress ?? '';
+// });
+// }
+
+// init();
+// export { };
