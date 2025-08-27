@@ -12,10 +12,10 @@ async function initMap() {
         mapTypeControl: false,
         mapId: 'DEMO_MAP_ID',
     });
-
+    const card = document.getElementById('text-input-card') as HTMLElement;
     const textInput = document.getElementById('text-input') as HTMLInputElement;
     const textInputButton = document.getElementById('text-input-button') as HTMLButtonElement;
-    const card = document.getElementById('text-input-card') as HTMLElement;
+    
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(card);
 
     textInputButton.addEventListener('click', () => {
@@ -36,7 +36,7 @@ async function findPlaces(query) {
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
     const request = {
         textQuery: query,
-        fields: ['displayName', 'location', 'businessStatus'],
+        fields: ['displayName', 'location', 'businessStatus', 'formattedAddress'],
         includedType: '', // Restrict query to a specific type (leave blank for any).
         useStrictTypeFiltering: true,
         locationBias: map.center,
@@ -70,7 +70,8 @@ async function findPlaces(query) {
 
             marker.addListener('gmp-click', () => {
                 map.panTo(place.location);
-                updateInfoWindow(place.displayName, place.id, marker);
+                console.log("place info:", place);
+                updateInfoWindow(place.displayName, place.id, place.formattedAddress, marker);
             });
 
             if (place.location != null) {
@@ -86,8 +87,9 @@ async function findPlaces(query) {
 }
 
 // Helper function to create an info window.
-async function updateInfoWindow(title, content, anchor) {
-    infoWindow.setContent(content);
+async function updateInfoWindow(title, content, address, anchor) {
+    // infoWindow.setContent(content);
+    infoWindow.setContent("location: "+address.toString());
     infoWindow.setHeaderContent(title);
     infoWindow.open({
         map,
