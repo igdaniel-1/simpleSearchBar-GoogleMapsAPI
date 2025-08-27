@@ -5,7 +5,8 @@ let infoWindow;
 async function initMap() {
     const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
-    const center = { lat: 37.4161493, lng: -122.0812166 };
+    // center is based in lower manhattan
+    const center = { lat: 40.714119, lng: -73.989563 };
     map = new Map(document.getElementById('map') as HTMLElement, {
         center: center,
         zoom: 11,
