@@ -1,64 +1,99 @@
+let map;
+let markers = {};
+let infoWindow;
 
-const picker = document.querySelector('gmpx-place-picker');
-const result = document.querySelector('.result');
-picker.addEventListener('gmpx-placechange', (e) => {
-  result.textContent = e.target.value?.formattedAddress ?? '';
-});
+async function initMap() {
+    const { Map, InfoWindow } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
+    const center = { lat: 37.4161493, lng: -122.0812166 };
+    map = new Map(document.getElementById('map') as HTMLElement, {
+        center: center,
+        zoom: 11,
+        mapTypeControl: false,
+        mapId: 'DEMO_MAP_ID',
+    });
 
+    const textInput = document.getElementById('text-input') as HTMLInputElement;
+    const textInputButton = document.getElementById('text-input-button') as HTMLButtonElement;
+    const card = document.getElementById('text-input-card') as HTMLElement;
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(card);
 
+    textInputButton.addEventListener('click', () => {
+        findPlaces(textInput.value);
+    });
 
+    textInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            findPlaces(textInput.value);
+        }
+    });
 
-// async function init() {
-//     // @ts-ignore
-//     const { Place, AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+    infoWindow = new google.maps.InfoWindow();
+}
 
-//     // sample request body.
-//     // let request = {
-//     //     input: "what",
-//     //     locationRestriction: { west: -122.44, north: 37.8, east: -122.39, south: 37.78 },
-//     //     origin: { lat: 37.7893, lng: -122.4039 },
-//     //     includedPrimaryTypes: ["restaurant"],
-//     //     language: "en-US",
-//     //     region: "us",
-//     // };
+async function findPlaces(query) {
+    const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+    const request = {
+        textQuery: query,
+        fields: ['displayName', 'location', 'businessStatus'],
+        includedType: '', // Restrict query to a specific type (leave blank for any).
+        useStrictTypeFiltering: true,
+        locationBias: map.center,
+        isOpenNow: true,
+        language: 'en-US',
+        maxResultCount: 8,
+        minRating: 1, // Specify a minimum rating.
+        region: 'us',
+    };
 
-//     // Create a session token.
-//     // const token = new AutocompleteSessionToken();
-//     // // Add the token to the request.
-//     // // @ts-ignore
-//     // request.sessionToken = token;
-//     // // Fetch autocomplete suggestions.
-//     // const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+    const { places } = await Place.searchByText(request);
 
-//     // const title = document.getElementById('title') as HTMLElement;
-//     // title.appendChild(document.createTextNode('Query predictions for "' + request.input + '":'));
+    if (places.length) {
+        const { LatLngBounds } = await google.maps.importLibrary("core") as google.maps.CoreLibrary;
+        const bounds = new LatLngBounds();
 
-//     // for (let suggestion of suggestions) {
-//     //     const placePrediction = suggestion.placePrediction;
+        // First remove all existing markers.
+        for (const id in markers) {
+            markers[id].map = null;
+        };
+        markers = {};
 
-//     //     // Create a new list element.
-//     //     const listItem = document.createElement('li');
-//     //     const resultsElement = document.getElementById("results") as HTMLElement;
-//     //     listItem.appendChild(document.createTextNode(placePrediction.text.toString()));
-//     //     resultsElement.appendChild(listItem);
-//     // }
+        // Loop through and get all the results.
+        places.forEach(place => {
+            const marker = new AdvancedMarkerElement({
+                map,
+                position: place.location,
+                title: place.displayName,
+            });
+            markers[place.id] = marker;
 
-//     // let place = suggestions[0].placePrediction.toPlace(); // Get first predicted place.
-//     // await place.fetchFields({
-//     //     fields: ['displayName', 'formattedAddress'],
-//     // });
+            marker.addListener('gmp-click', () => {
+                map.panTo(place.location);
+                updateInfoWindow(place.displayName, place.id, marker);
+            });
 
-//     // const placeInfo = document.getElementById("prediction") as HTMLElement;
-//     // placeInfo.textContent = 'First predicted place: ' + place.displayName + ': ' + place.formattedAddress;
+            if (place.location != null) {
+                bounds.extend(place.location);
+            }
+        });
 
-//     // new code for search bar
-//     const picker = document.querySelector('gmpx-place-picker');
-//     const result = document.querySelector('.result');
-//     picker.addEventListener('gmpx-placechange', (e) => {
-//     result.textContent = e.target.value?.formattedAddress ?? '';
-// });
-// }
+        map.fitBounds(bounds);
 
-// init();
-// export { };
+    } else {
+        console.log('No results');
+    }
+}
+
+// Helper function to create an info window.
+async function updateInfoWindow(title, content, anchor) {
+    infoWindow.setContent(content);
+    infoWindow.setHeaderContent(title);
+    infoWindow.open({
+        map,
+        anchor,
+        shouldFocus: false,
+    });
+}
+
+initMap();
