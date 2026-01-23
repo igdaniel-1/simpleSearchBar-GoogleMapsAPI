@@ -14,3 +14,17 @@ With your new key, locate the .env file. Replace "YOUR API KEY," keeping the quo
 ## Installs
 1. Install necessary libraries/packages (including: node,npm)
 ```pip install <package>```
+
+## Windows
+To run on windows, I managed the node dependencies by using docker. Following this guide's code:
+'https://nodejs.org/en/download/'.
+
+### Using Docker
+1. docker and docker gui installed
+2. created docker file
+3. build the image
+'docker build -t <dropletName> .'
+current name: getting-started'
+4. run the image
+'docker run -d -p 127.0.0.1:3000:3000 getting-started'
+5. view on port 3000, http://localhost:3000/
